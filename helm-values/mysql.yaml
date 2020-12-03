@@ -1,0 +1,104 @@
+image: "mysql"
+imageTag: "5.6"
+
+busybox:
+  image: "busybox"
+  tag: "1.29.3"
+
+testFramework:
+  image: "dduportal/bats"
+  tag: "0.4.0"
+
+mysqlRootPassword: root
+imagePullPolicy: IfNotPresent
+
+args: []
+
+extraVolumes: |
+
+extraVolumeMounts: |
+
+extraInitContainers: |
+
+nodeSelector: {}
+
+tolerations: []
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+persistence:
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  annotations: {}
+
+securityContext:
+  enabled: false
+  runAsUser: 999
+  fsGroup: 999
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+
+configurationFilesPath: /etc/mysql/conf.d/
+
+configurationFiles: {}
+
+initializationFiles: {}
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "9104"
+  livenessProbe:
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 1
+  flags: []
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
+service:
+  annotations: {}
+  ## Specify a service type
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  type: LoadBalancer
+  port: 3306
+  # loadBalancerIP:
+
+ssl:
+  enabled: false
+  secret: mysql-ssl-certs
+  certificates:
+
+deploymentAnnotations: {}
+
+podAnnotations: {}
+podLabels: {}
+
+initContainer:
+  resources:
+    requests:
+      memory: 10Mi
+      cpu: 10m
